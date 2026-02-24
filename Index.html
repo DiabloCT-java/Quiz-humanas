@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Sobrevivência: Humanas</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .section-title { background: #3498db; color: white; padding: 5px 15px; border-radius: 5px; margin-top: 30px; }
+        .question { margin-bottom: 25px; padding: 15px; border-left: 5px solid #bdc3c7; background: #fafafa; }
+        .options { list-style: none; padding: 0; }
+        .options li { margin: 10px 0; }
+        button { background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #27ae60; }
+        .feedback { margin-top: 10px; font-weight: bold; display: none; padding: 10px; border-radius: 5px; }
+        .correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .wrong { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🚀 Quiz de Sobrevivência: Humanas</h1>
+    <p style="text-align:center">Geopolítica, História e Filosofia</p>
+
+    <div id="quiz"></div>
+
+    <div style="text-align: center; margin-top: 50px; color: #7f8c8d;">
+        <p>Feito para salvar a galera do sono! 😴➡️🧠</p>
+    </div>
+</div>
+
+<script>
+const questions = [
+    // GEOGRAFIA
+    { category: "GEOGRAFIA", q: "Qual região detém quase 50% das reservas mundiais de petróleo?", options: ["América do Sul", "Oriente Médio", "África Subsaariana", "Europa"], correct: 1, info: "O Oriente Médio detém cerca de 48% das reservas, por isso é foco de tantos conflitos." },
+    { category: "GEOGRAFIA", q: "Qual aliança militar a Rússia quer impedir que a Ucrânia se junte?", options: ["ONU", "BRICS", "União Europeia", "OTAN"], correct: 3, info: "A OTAN é a aliança militar liderada pelos EUA; a Rússia vê a expansão dela como ameaça." },
+    { category: "GEOGRAFIA", q: "A 'Nova Rota da Seda' (investimento em portos e ferrovias) é liderada por qual país?", options: ["Rússia", "EUA", "China", "Japão"], correct: 2, info: "A China usa seu poder econômico para criar rotas comerciais e aumentar sua influência global." },
+    { category: "GEOGRAFIA", q: "Além de território, quais minerais estratégicos estão em jogo na Ucrânia?", options: ["Ouro e Prata", "Lítio e Titânio", "Ferro e Cobre", "Petróleo e Gás apenas"], correct: 1, info: "Lítio e Titânio são essenciais para indústrias de alta tecnologia e baterias." },
+    
+    // HISTÓRIA
+    { category: "HISTÓRIA", q: "O que foi a 'Questão Religiosa' que enfraqueceu D. Pedro II?", options: ["O Imperador virou ateu", "Conflito entre o Imperador e o Papa devido à Maçonaria", "A proibição de missas no Brasil", "A obrigação de todos serem maçons"], correct: 1, info: "D. Pedro II usou o Padroado para desafiar o Papa e prender bispos, perdendo o apoio do clero." },
+    { category: "HISTÓRIA", q: "Qual filosofia influenciou o Exército a querer 'Ordem e Progresso'?", options: ["Positivismo", "Marxismo", "Existencialismo", "Liberalismo"], correct: 0, info: "O Positivismo pregava um governo técnico e forte, o que acelerou o fim da Monarquia." },
+    { category: "HISTÓRIA", q: "Quem eram os 'republicanos de última hora'?", options: ["Os escravizados libretos", "Os militares após a guerra", "Fazendeiros do Vale do Paraíba após a Lei Áurea", "Comerciantes estrangeiros"], correct: 2, info: "Eram os antigos apoiadores da Monarquia que ficaram bravos com o fim da escravidão sem indenização." },
+
+    // FILOSOFIA
+    { category: "FILOSOFIA", q: "Para Kierkegaard, a liberdade de escolha gera qual sentimento?", options: ["Felicidade plena", "Tédio", "Angústia", "Raiva"], correct: 2, info: "A angústia surge da responsabilidade total de escolher o próprio destino sem garantias." },
+    { category: "FILOSOFIA", q: "Schopenhauer diz que a vida oscila entre quais dois estados?", options: ["Alegria e Tristeza", "Trabalho e Descanso", "Dor (sofrimento) e Tédio", "Amor e Ódio"], correct: 2, info: "Sofremos pelo desejo não realizado; quando realizamos, ficamos entediados e desejamos outra coisa." },
+    { category: "FILOSOFIA", q: "O que é a 'Vontade' na filosofia de Schopenhauer?", options: ["Um desejo consciente", "Uma força cega e irracional que rege o universo", "A vontade política do povo", "O desejo de ser livre"], correct: 1, info: "Para ele, a Vontade é uma força insaciável presente em tudo, que gera conflito e sofrimento." }
+];
+
+const quizContainer = document.getElementById('quiz');
+
+questions.forEach((item, index) => {
+    let html = `
+        <div class="question">
+            <small><strong>${item.category}</strong></small>
+            <p><strong>${index + 1}. ${item.q}</strong></p>
+            <ul class="options">
+    `;
+    
+    item.options.forEach((opt, i) => {
+        html += `<li><input type="radio" name="q${index}" value="${i}"> ${opt}</li>`;
+    });
+    
+    html += `
+            </ul>
+            <button onclick="checkAnswer(${index})">Verificar</button>
+            <div id="feedback${index}" class="feedback"></div>
+        </div>
+    `;
+    quizContainer.innerHTML += html;
+});
+
+function checkAnswer(index) {
+    const options = document.getElementsByName(`q${index}`);
+    const feedback = document.getElementById(`feedback${index}`);
+    let selected = -1;
+    
+    for (let i = 0; i < options.length; i++) {
+        if (options[i].checked) selected = i;
+    }
+    
+    if (selected === -1) {
+        alert("Escolha uma opção primeiro!");
+        return;
+    }
+    
+    feedback.style.display = "block";
+    if (selected === questions[index].correct) {
+        feedback.className = "feedback correct";
+        feedback.innerHTML = "✅ Acertou! " + questions[index].info;
+    } else {
+        feedback.className = "feedback wrong";
+        feedback.innerHTML = "❌ Errou. " + questions[index].info;
+    }
+}
+</script>
+
+</body>
+</html>
